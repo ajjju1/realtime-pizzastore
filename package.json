@@ -6,15 +6,21 @@
   "author": "ajmal malik",
   "license": "MIT",
   "dependencies": {
+    "commander": "^6.2.1",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.6"
+    "laravel-mix": "^6.0.5",
+    "nodemon": "^2.0.6",
+    "postcss": "^8.1.14",
+    "resolve-url-loader": "^3.1.0",
+    "sass": "^1.30.0",
+    "sass-loader": "^8.0.2"
   },
   "scripts": {
-    "serve" : "node server.js",
-    "dev" : "nodemon server.js -e ejs,hbs,mjs,json,js"
+    "serve": "node server.js",
+    "dev": "nodemon server.js -e ejs,hbs,mjs,json,js"
   }
 }

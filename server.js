@@ -6,9 +6,13 @@ const PORT = process.env.PORT || 3000
 
 const app = express();
 
+//Assets
+app.use(express.static('public'))
+
+
 //set Template engine
 // console.log(path.join(__dirname, '/resources/views'))
-app.use(expressLayout);
+// app.use(expressLayout);
 app.set('views',path.join(__dirname, '/resources/views'))
 app.set('view engine', 'ejs');
 
