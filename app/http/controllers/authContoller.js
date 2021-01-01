@@ -2,6 +2,9 @@ const User = require("../../models/user");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
 function authControllers() {
+    const _getRedirectUrl = (req) =>{
+        return req.user.role === 'admin' ? '/admin/adminorders' : '/customer/orders';
+    }
     return{
         login(req,res){
             res.render('auth/login')
@@ -13,20 +16,18 @@ function authControllers() {
             if(!email || !password){
                 req.flash('error' , 'All fields are required');
                 return res.redirect("/login");
-            }
+            } //here we are using validation if user has not put an email an password and he his logging in side
 
 
             passport.authenticate('local', (err, user, info) =>{
                 if(err){
-                    req.flash("error", info.messae);
+                    req.flash("error", info.message);
                     return next(err)
                 }
 
                 if(!user){
-                    req.flash("error", (err,user,info) =>{
-                        req.flash("error", info.message);
-                        return res.redirect('/login');
-                    });
+                    req.flash("error", info.message)
+                    return res.redirect('/login');
                 }
 
                 req.logIn(user, (err) =>{
@@ -34,8 +35,8 @@ function authControllers() {
                         req.flash('error', info.message);
                         return next(err); 
                     }
-
-                    return res.redirect('/');
+                    
+                    return res.redirect(_getRedirectUrl(req));
                 })
             })(req, res, next);  //!!!IMPORTANT we write this bcz the passport.authenticate return a fuction which we have to call
         },

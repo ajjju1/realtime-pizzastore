@@ -25,7 +25,7 @@ connection.once('open', () =>{
 //Session store
 let mongoStore = new MongoDbstore({
     mongooseConnection : connection,
-    collection : 'session'
+    collection : 'sessions'
 })
 
 
