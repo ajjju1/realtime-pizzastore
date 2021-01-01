@@ -2,8 +2,7 @@ import axios from 'axios'
 import moment from 'moment'
 
 export function initAdmin() {
-    console.log("hello this init function")
-    const orderTableBody = document.querySelector("#orderTableBody");
+    const orderTableBody = document.querySelector('#orderTableBody')
     let orders = []
     let markup
 
@@ -12,13 +11,11 @@ export function initAdmin() {
             "X-Requested-With" : "XMLHttpRequest"
         }
     }).then(res => {
-        console.log("comeplete then");
         orders = res.data
         markup = generateMarkup(orders)
         orderTableBody.innerHTML = markup
     }).catch((err) =>{
-        console.log(err);
-        console.log("erroer occured plz check")
+        console.log(`erroer occured plz check ${err}`)
     })
 
     function renderItems(items) {
@@ -32,6 +29,7 @@ export function initAdmin() {
 
       
       function generateMarkup(orders) {
+        console.log(`This is orders ${orders}`); 
         return orders.map(order => {
             return `
                 <tr>
