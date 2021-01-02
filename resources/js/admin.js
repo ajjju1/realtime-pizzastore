@@ -1,21 +1,22 @@
 import axios from 'axios'
 import moment from 'moment'
+import Noty from 'noty'
 
-export function initAdmin() {
+export function initAdmin(socket) {
     const orderTableBody = document.querySelector('#orderTableBody')
     let orders = []
     let markup
 
-    axios.get('/admin/orders',{
-        headers : {
-            "X-Requested-With" : "XMLHttpRequest"
+    axios.get('/admin/orders', {
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
         }
     }).then(res => {
         orders = res.data
         markup = generateMarkup(orders)
         orderTableBody.innerHTML = markup
-    }).catch((err) =>{
-        console.log(`erroer occured plz check ${err}`)
+    }).catch(err => {
+        console.log(err)
     })
 
     function renderItems(items) {
@@ -27,9 +28,7 @@ export function initAdmin() {
         }).join('')
       }
 
-      
-      function generateMarkup(orders) {
-        console.log(`This is orders ${orders}`); 
+    function generateMarkup(orders) {
         return orders.map(order => {
             return `
                 <tr>
@@ -75,9 +74,23 @@ export function initAdmin() {
                 </td>
                 <!-- <td class="border px-4 py-2">
                     ${ order.paymentStatus ? 'paid' : 'Not paid' }
-                  </td> -- >
+                </td> -->
             </tr>
         `
         }).join('')
     }
+
+    
+    socket.on('orderPlaced', (order) =>{
+        new Noty({
+            type: "success",
+            timeout : 1000,
+            text: "New Order!!!",
+            progressBar : false
+        }).show();
+        orders.unshift(order)
+        orders.unshift(order)
+        orderTableBody.innerHTML = ''
+        orderTableBody.innerHTML = generateMarkup(orders)
+    });
 }

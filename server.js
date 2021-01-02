@@ -10,6 +10,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 const MongoDbstore = require("connect-mongo")(session);
 const passport = require("passport");
+const Emitter = require('events');
 
 //Database Connection
 const url = "mongodb://localhost/pizza";
@@ -28,8 +29,11 @@ let mongoStore = new MongoDbstore({
     collection : 'sessions'
 })
 
+//Event emitter
+const eventEmitter = new Emitter() //this is to create event emitter bzc we are sending it to statuscontroller 
+app.set('eventEmitter', eventEmitter); //app.set('anyName', function/variablefunction)
 
-//Session
+//Session config
 app.use(session({
     secret : process.env.COOKIE_SECERT,
     resave : false,
@@ -72,6 +76,25 @@ app.set('view engine', 'ejs');
 require("./routes/web")(app)
 
 
-app.listen(PORT, () =>{
+const server = app.listen(PORT, () =>{
     console.log(`listening on port : - ${PORT}`)
+})
+
+//socket:- This socket is for server side
+const io = require('socket.io')(server)
+io.on('connection', (socket) =>{
+    //Join cleint to a private room room should had name which must be unique
+    // console.log(socket.id);
+    socket.on('join', (orderId) =>{ //this join is emmited by client we are catching it here
+        // console.log(orderId);
+        socket.join(orderId)              //this join method is socket's internal join method
+    });
+})
+
+eventEmitter.on('orderUpdated', (data) => { //this we are catching this from statuscontroller even name orderUpdated
+    io.to(`order_${data.id}`).emit('orderUpdated', data)
+})
+
+eventEmitter.on('orderPlaced', (data) =>{
+    io.to('adminRoom').emit('orderPlaced', data);
 })

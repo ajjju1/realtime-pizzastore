@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const passport = require("passport");
 function authControllers() {
     const _getRedirectUrl = (req) =>{
-        return req.user.role === 'admin' ? '/admin/adminorders' : '/customer/orders';
+        return req.user.role === 'admin' ? '/admin/orders' : '/customer/orders';
     }
     return{
         login(req,res){
